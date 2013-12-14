@@ -1,0 +1,58 @@
+<!DOCTYPE html><html><head><title>:: selfish-beats ::</title><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css"><link href="http://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet"><style>* {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 100;
+}
+.give-me-padding {
+  padding: 10px;
+}
+form h4 {
+  text-transform: uppercase;
+  color: #999;
+  font-weight: normal;
+  margin-left: 100px;
+}
+form h4 span {
+  border-bottom: 1px solid #ccc;
+}
+pre#output {
+  font-size: 14px;
+  color: #666;
+}</style><!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><script>window.html5 || document.write('<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"><\\/script>')
+</script><![endif]--></head><body><div class="pure-g-r"><div class="pure-u-1-6">&nbsp;</div><div class="pure-u-1-3"><div class="give-me-padding"><form method="GET" id="get-beats" name="get-beats" class="pure-form pure-form-aligned"><h4> <span>Swatch Internet Time</span></h4><p class="pure-control-group"><label for="input-date">Day / Time</label><input type="datetime" name="input-date" id="input-date" required><span style="display:block; height:5px;"></span><label style="color:#666;">Use this format:</label><span style="font-size:12px; color:#666;">YYYY-MM-DD HH:mm:ss</span></p><p class="pure-control-group"><label>&nbsp;</label><button type="submit" class="pure-button pure-button-primary">Get @beats!</button></p></form></div></div><div class="pure-u-1-3"><div class="give-me-padding"><pre id="output"></pre></div></div><div class="pure-u-1-6">&nbsp;</div></div><script src="http://code.jquery.com/jquery-2.0.3.min.js"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js"></script><script>$(function () {
+
+  function test () {
+    var __date = moment().format('YYYY-MM-DD HH:mm:ss');
+      ;
+      
+    $('#input-date').val(__date);
+  }
+  test();
+  
+  $('#get-beats').submit(function (evt) {
+    evt.preventDefault();
+    
+    var _date = $('#input-date').val()
+      , _full = new Date(Date.parse(_date))
+      ;
+      
+    if (moment(_full).isValid()) {
+      $.ajax({
+        url: 'http://localhost:1337/',
+        data: {datetime: _full},
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+          $('#output').text(JSON.stringify(data, undefined, 2));
+        },
+        error: function (a, b, c) {
+          console.log('AJAX error!', a, b, c);
+        }
+      });
+    } else {
+      $('#output').text('Not a valid date!');
+    }
+    
+    return false;
+  });
+  
+});</script></body></html>

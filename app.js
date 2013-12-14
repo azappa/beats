@@ -9,22 +9,28 @@ var http = require('http')
 
 
 http.createServer(function (req, res) {
-  var url_p = url.parse(req.url, true).query
-    , dateUTC = moment.utc()
-    , utcHours = dateUTC.hours()
-    , utcMinutes = dateUTC.minutes()
-    , utcSeconds = dateUTC.seconds()
-    , swatchBeats = Math.floor( (((utcHours + 1)%24) + utcMinutes/60 + utcSeconds/3600) * 1000 / 24)
+
+  var datetimePassed = url.parse(req.url, true).query.datetime || new Date()
+    , datetime = moment(datetimePassed)
+    , dateUTC = datetime.utc()
+    , swatchBeats = Math.round((((dateUTC.hours() + 1) % 24) + dateUTC.minutes() / 60 + dateUTC.seconds() / 3600) * 1000 / 24)
     , objOutput = {
       beats: swatchBeats,
-      dateUTC: dateUTC
+      dateUTC: dateUTC,
+      datePassedOrNot: url.parse(req.url, true).query.datetime ? 'passed' : 'not passed',
+      dateOriginal: datetimePassed
     }
     ;
 
 
-
-
-
-  res.writeHead(200, {'Content-Type': 'application/json'});
+  res.writeHead(200, {
+    'Content-Type': 'application/json',
+    'access-control-allow-origin': '*',
+    'access-control-allow-methods': 'GET',
+    'access-control-allow-headers': 'content-type, accept'
+  });
+  
   res.end(JSON.stringify(objOutput));
+
+
 }).listen(1337, '127.0.0.1');
