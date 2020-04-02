@@ -3,6 +3,6 @@
   "description": "Return Swatch Internet Time",
   "version": "0.0.1",
   "dependencies": {
-    "moment": "~2.4.0"
+    "moment": "~2.24.0"
   }
 }
